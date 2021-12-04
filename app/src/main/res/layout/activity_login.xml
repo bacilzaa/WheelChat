@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".ui.activity.auth.LoginActivity">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_gravity="center|top"
+            app:srcCompat="@drawable/ic_logo_wheelchat" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/emailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
+            android:minHeight="48dp"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/passwordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
+            android:inputType="textPassword"
+            android:minHeight="48dp"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/loginBtn"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="20dp"
+            android:elevation="10dp"
+            android:text="login"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:backgroundTint="@color/purple_500"
+            android:background="@drawable/round_btn"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/signUpTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_gravity="end"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/purple_200"
+            android:text="Sign Up"/>
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

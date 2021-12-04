@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "841664012532",
+    "project_id": "wheelchat-ac14c",
+    "storage_bucket": "wheelchat-ac14c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:841664012532:android:7a5e114ded50161a9a7ea1",
+        "android_client_info": {
+          "package_name": "com.juniverse.wheelchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "841664012532-14u68fg1sio3t9qgnomsg1mlcjej57d4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBY3nrFHkMqHVsLFJ8kondR2ar-VI-nwSs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "841664012532-14u68fg1sio3t9qgnomsg1mlcjej57d4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
