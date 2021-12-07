@@ -2,124 +2,112 @@ package com.juniverse.wheelchat.viewmodel
 
 import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class FirebaseViewModel() : ViewModel() {
-        private val LOG_TAG = "FirebaseViewModel"
-        private var auth:FirebaseAuth? = null
+    private var auth: FirebaseAuth? = null
 
-        private val _loggedStatus = MutableLiveData<Boolean>()
-        val loggedStatus : LiveData<Boolean> = _loggedStatus
+    private val _loggedStatus = MutableLiveData<Boolean>()
+    val loggedStatus: LiveData<Boolean> = _loggedStatus
 
-        var loading:MutableLiveData<Boolean> = MutableLiveData()
+    private val _currentUser = MutableLiveData<FirebaseUser>()
+    val currentUser :LiveData<FirebaseUser> = _currentUser
 
 
-        init {
-            auth = FirebaseAuth.getInstance()
-            loading.postValue(false)
+    var loading: MutableLiveData<Boolean> = MutableLiveData()
+
+    init {
+        auth = FirebaseAuth.getInstance()
+        loading.postValue(false)
+
+    }
+
+    fun getLoggedStatus() {
+        viewModelScope.launch {
+            _loggedStatus.value = auth?.currentUser != null
         }
+    }
 
-        fun getLoggedStatus(){
-            viewModelScope.launch {
-                _loggedStatus.value = auth?.currentUser != null
-            }
+    fun getCurrentUser(){
+        viewModelScope.launch {
+            _currentUser.value =auth?.currentUser
         }
+    }
 
+    private val _registrationStatus = MutableLiveData<String>()
+    val registrationStatus: LiveData<String> = _registrationStatus
 
-        private val _registrationStatus = MutableLiveData<Result<String>>()
-        val registrationStatus:LiveData<Result<String>> = _registrationStatus
-
-        fun signUp(email:String, pass:String){
-            loading.postValue(true)
-            viewModelScope.launch(Dispatchers.IO){
-                var errorCode = -1
-                try {
-                    auth?.let { authentication ->
-                        authentication.createUserWithEmailAndPassword(email, pass)
-                            .addOnCompleteListener{task ->
-                                if(!task.isSuccessful){
-
-                                }else{
-
-                                }
-                                loading.postValue(false)
-                            }
-
-                    }
-                }catch (e:Exception){
-                    e.printStackTrace()
-                    loading.postValue(false)
-                    if(errorCode != -1){
-                        _registrationStatus.postValue(Result.failure(e))
-                    }else{
-                        _registrationStatus.postValue(Result.failure(e))
-                    }
-                }
-
-            }
-        }
-
-    private val _signInStatus = MutableLiveData<Result<String>>()
-    val signInStatus: LiveData<Result<String>> = _signInStatus
-    fun signIn(email:String, password:String){
+    fun signUp(email: String, pass: String) {
         loading.postValue(true)
-        viewModelScope.launch(Dispatchers.IO){
-            var  errorCode = -1
-            try{
-                auth?.let{ login->
-                    login.signInWithEmailAndPassword(email,password)
-                        .addOnCompleteListener {task ->
-
-                            if(!task.isSuccessful){
-                                println("Login Failed with ${task.exception}")
-                                _signInStatus.postValue(Result.success("Login Failed with ${task.exception}"))
-                            }else{
-                                _signInStatus.postValue(Result.success("Login Successful"))
-
-                            }
-                            loading.postValue(false)
+        viewModelScope.launch(Dispatchers.IO) {
+            auth?.let { auth ->
+                auth.createUserWithEmailAndPassword(email, pass)
+                    .addOnCompleteListener {
+                        if (!it.isSuccessful) {
+                            _registrationStatus.postValue(it.exception?.message)
+                        } else {
+                            _registrationStatus.postValue("Sign Up Success")
+                            getLoggedStatus()
                         }
-
-                }
-
-            }catch (e:Exception){
-                e.printStackTrace()
+                    }
+                    .addOnFailureListener {
+                        _registrationStatus.postValue(it.message)
+                    }
                 loading.postValue(false)
-                if(errorCode != -1){
-                    _registrationStatus.postValue(Result.failure(e))
-                }else{
-                    _registrationStatus.postValue(Result.failure(e))
-                }
-
-
             }
         }
     }
 
-    fun resetSignInLiveData(){
-        _signInStatus.value =  Result.success("Reset")
+    private val _signInStatus = MutableLiveData<String>()
+    val signInStatus: LiveData<String> = _signInStatus
+
+    fun signIn(email: String, password: String) {
+        loading.postValue(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            auth?.let { login ->
+                login.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { task ->
+
+                        if (!task.isSuccessful) {
+                            _signInStatus.postValue(task.exception?.message)
+                        } else {
+                            _signInStatus.postValue("Login Successful")
+                            getLoggedStatus()
+                        }
+                    }
+                    .addOnFailureListener {
+                        _signInStatus.postValue(it.message)
+                    }
+
+                loading.postValue(false)
+            }
+        }
     }
+
     private val _signOutStatus = MutableLiveData<Result<String>>()
     val signOutStatus: LiveData<Result<String>> = _signOutStatus
-    fun signOut(){
+
+    fun signOut() {
         loading.postValue(true)
-        viewModelScope.launch(Dispatchers.IO){
-            var  errorCode = -1
-            try{
-                auth?.let {authentation ->
+        viewModelScope.launch(Dispatchers.IO) {
+            var errorCode = -1
+            try {
+                auth?.let { authentation ->
                     authentation.signOut()
                     _signOutStatus.postValue(Result.success("Signout Successful"))
                     loading.postValue(false)
+                    getLoggedStatus()
                 }
 
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
                 loading.postValue(false)
-                if(errorCode != -1){
+                if (errorCode != -1) {
                     _signOutStatus.postValue(Result.failure(e))
-                }else{
+                } else {
                     _signOutStatus.postValue(Result.failure(e))
                 }
 
@@ -128,4 +116,4 @@ class FirebaseViewModel() : ViewModel() {
         }
     }
 
-    }
+}

@@ -31,9 +31,18 @@ class SplashScreenActivity : AppCompatActivity() {
                         Intent(this@SplashScreenActivity, MainActivity::class.java)
                     )
                 }else{
-                    startActivity(
-                        Intent(this@SplashScreenActivity, LoginActivity::class.java)
-                    )
+                    getCurrentUser()
+                    if(currentUser.value?.displayName != null){
+                        startActivity(
+                            Intent(this@SplashScreenActivity, LoginActivity::class.java)
+                        )
+                    }else{
+                        startActivity(
+                            Intent(this@SplashScreenActivity,ProfileActivity::class.java)
+                        )
+                    }
+
+
                 }
 
                 finish()

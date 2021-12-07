@@ -28,6 +28,12 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="20dp"
             android:minHeight="48dp"
+            android:hint="email"
+            android:lines="1"
+            android:maxLines="1"
+            android:padding="10dp"
+            android:elevation="4dp"
+            android:background="@drawable/border_edit_text"
             tools:ignore="SpeakableTextPresentCheck" />
 
         <androidx.appcompat.widget.AppCompatEditText
@@ -37,6 +43,10 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="20dp"
             android:inputType="textPassword"
+            android:padding="10dp"
+            android:elevation="4dp"
+            android:background="@drawable/border_edit_text"
+            android:hint="password"
             android:minHeight="48dp"
             tools:ignore="SpeakableTextPresentCheck" />
 
@@ -66,6 +76,7 @@
             android:textStyle="bold"
             android:textColor="@color/purple_200"
             android:text="Sign Up"/>
+
 
 
     </androidx.appcompat.widget.LinearLayoutCompat>

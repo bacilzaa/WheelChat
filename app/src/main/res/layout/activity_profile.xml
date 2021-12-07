@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/editProfileTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:text="Edit your profile" />
+
+        <ImageButton
+            android:id="@+id/profileImageBtn"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:background="@drawable/backgroud_circle_image"
+            android:scaleType="fitXY"
+            android:padding="10dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/ic_baseline_camera_alt_24" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/usernameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
+            android:minHeight="48dp"
+            android:hint="Your name"
+            android:lines="1"
+            android:maxLines="1"
+            android:padding="10dp"
+            android:elevation="4dp"
+            android:background="@drawable/border_edit_text"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/nextBtn"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="20dp"
+            android:elevation="10dp"
+            android:text="next"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:backgroundTint="@color/purple_500"
+            android:background="@drawable/round_btn"
+            />
+
+
+    </LinearLayout>
+
+</layout>
