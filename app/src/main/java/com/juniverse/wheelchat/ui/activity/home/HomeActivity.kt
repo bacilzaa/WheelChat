@@ -1,4 +1,4 @@
-package com.juniverse.wheelchat.ui.activity
+package com.juniverse.wheelchat.ui.activity.home
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
