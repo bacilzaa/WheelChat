@@ -1,35 +1,32 @@
-package com.juniverse.wheelchat.ui.activity
+package com.juniverse.wheelchat.ui.activity.home
 
-import android.app.Activity
 import android.app.AlertDialog
-import android.app.ProgressDialog
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
-import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
-import androidx.core.content.FileProvider
-import androidx.lifecycle.Observer
-import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.juniverse.wheelchat.databinding.ActivityProfileBinding
-import com.juniverse.wheelchat.viewmodel.FirebaseViewModel
+import com.juniverse.wheelchat.helper.bitmapToFile
+import com.juniverse.wheelchat.model.User
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_profile.*
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.*
 import java.util.*
 
 class ProfileActivity : AppCompatActivity() {
+
+    val REQUEST_IMAGE_CAPTURE = 1
 
     private val binding: ActivityProfileBinding by lazy {
         ActivityProfileBinding.inflate(
@@ -37,35 +34,61 @@ class ProfileActivity : AppCompatActivity() {
         )
     }
 
-    val REQUEST_IMAGE_CAPTURE = 1
+    companion object {
+        const val CURRENT_USER_KEY = "CURRENT_USER_KEY"
 
-    private var imageUri: Uri? = null
-
-    private val viewModel: FirebaseViewModel by viewModel()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(binding.root)
-
-        initObsever()
-        initView()
-
-        viewModel.getCurrentUser()
-    }
-
-    private fun initObsever() {
-        viewModel.apply {
-
-            currentUser.observe(this@ProfileActivity, Observer {
-
-            })
-
+        fun launch(context: Context, user: User) {
+            val intent = Intent(context, ProfileActivity::class.java).apply {
+                putExtra(CURRENT_USER_KEY, user)
+            }
+            context.startActivity(intent)
         }
     }
 
-    private fun initView() {
+    private var imageUri: Uri? = null
+
+    private var auth: FirebaseAuth? = null
+
+    private var db: DatabaseReference? = null
+
+    init {
+        auth = FirebaseAuth.getInstance()
+        db = Firebase.database.reference.child("User").child(auth?.currentUser?.uid.toString())
+    }
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        supportActionBar?.hide()
+
+        setContentView(binding.root)
+
+        intent.extras?.getParcelable<User>(CURRENT_USER_KEY)?.let {
+            initView(it)
+        }
+    }
+
+
+    private fun initView(currentUser: User) {
 
         with(binding) {
+
+            Log.i("Test", "ProfileActivity :" + currentUser.toString())
+
+            if (!currentUser?.name.isNullOrEmpty()) {
+                usernameEditText.setText(currentUser?.name)
+                profileCloseBtn.visibility = View.VISIBLE
+
+                if (imageUri == null) {
+                    Picasso.get().load(currentUser?.profile_img)
+                        .into(profileImageBtn)
+                }
+            }
+
+            profileCloseBtn.setOnClickListener {
+                finish()
+            }
 
             profileImageBtn.setOnClickListener {
                 choosePicture()
@@ -73,13 +96,14 @@ class ProfileActivity : AppCompatActivity() {
 
             updateBtn.setOnClickListener {
                 var username = usernameEditText.text.toString()
-                if(username.isEmpty()){
-                    Toast.makeText(this@ProfileActivity,"Please enter your display name",Toast.LENGTH_SHORT).show()
-                }else{
-                    update(username)
-
-                    startActivity(Intent(this@ProfileActivity,MainActivity::class.java))
-                    finish()
+                if (username.isEmpty()) {
+                    Toast.makeText(
+                        this@ProfileActivity,
+                        "Please enter your display name",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    updateProfile(username)
                 }
             }
 
@@ -119,79 +143,46 @@ class ProfileActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data?.data != null) {
             imageUri = data?.data
-        }else{
-
-            imageUri = bitmapToFile(data?.extras?.get("data") as Bitmap)
+        } else {
+            imageUri = bitmapToFile(this@ProfileActivity, data?.extras?.get("data") as Bitmap)
         }
-
+        Log.i("Test", imageUri.toString())
         binding.profileImageBtn.setImageURI(imageUri)
     }
 
-    private fun bitmapToFile(bitmap:Bitmap): Uri {
-        // Get the context wrapper
-        val wrapper = ContextWrapper(applicationContext)
 
-        // Initialize a new file instance to save bitmap object
-        var file = wrapper.getDir("Images",Context.MODE_PRIVATE)
-        file = File(file,"${UUID.randomUUID()}.jpg")
+    private fun updateProfile(username: String) {
 
-        try{
-            // Compress the bitmap and save in jpg format
-            val stream: OutputStream = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream)
-            stream.flush()
-            stream.close()
-        }catch (e:IOException){
-            e.printStackTrace()
-        }
-
-        // Return the saved bitmap uri
-        return Uri.parse(file.absolutePath)
-    }
-
-    private fun update(username:String) {
-
-        viewModel.apply {
-
-            var pd = ProgressDialog(this@ProfileActivity)
-            pd.setTitle("Uploading Image...")
-            pd.show()
-
-            var uid = currentUser.value?.uid.toString()
+        var uid = auth?.currentUser?.uid.toString()
 
 
-            val refStorage =
-                Firebase.storage.reference.child("User/Profile/" + uid)
-            imageUri?.let {
-                refStorage.putFile(it)
-                    .addOnSuccessListener { task ->
-                        pd.dismiss()
+        val refStorage = Firebase.storage.reference.child("User/Profile/" + uid)
+        imageUri?.let {
+            refStorage.putFile(it)
+                .addOnSuccessListener { task ->
+
+                    refStorage.downloadUrl.addOnSuccessListener {
+                        var profile_img = it.toString()
+
+                        db?.child("name")?.setValue(username)
+                        db?.child("profile_img")?.setValue(profile_img)
+
+                        startActivity(Intent(this@ProfileActivity, MainActivity::class.java))
+                        finish()
+
                         Toast.makeText(this@ProfileActivity, "Uploaded Success", Toast.LENGTH_LONG)
                             .show()
-
-                        var profile_img = task.uploadSessionUri.toString()
-
-                        userData.value?.profile_img = profile_img
-                        userData.value?.name = username
-
-                        updateProfile()
-
                     }
-                    .addOnFailureListener {
-                        pd.dismiss()
-                        Toast.makeText(
-                            this@ProfileActivity,
-                            "Uploaded Failed :${it.message}",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                    .addOnProgressListener { task ->
-                        var progressPrecent = (100.00 * task.bytesTransferred / task.totalByteCount)
-                        pd.setMessage("Progress : $progressPrecent %")
-                    }
-            }
+
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(
+                        this@ProfileActivity,
+                        "Uploaded Failed :${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
         }
     }
-
 
 }

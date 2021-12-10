@@ -12,28 +12,38 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/profileCloseBtn"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_close_24"
+            android:backgroundTint="@color/white"
+            />
 
         <TextView
             android:id="@+id/editProfileTv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
             android:textSize="20sp"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:gravity="center"
             android:text="Edit your profile" />
 
-        <ImageButton
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/profileImageBtn"
+            android:layout_marginTop="40dp"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:background="@drawable/backgroud_circle_image"
-            android:scaleType="fitXY"
-            android:padding="10dp"
             android:layout_gravity="center"
-            android:layout_marginTop="40dp"
-            android:src="@drawable/ic_baseline_camera_alt_24" />
+            android:background="@drawable/backgroud_circle_image"
+            android:src="@drawable/ic_baseline_camera_alt_24"
+            app:civ_border_width="2dp"
+            app:civ_border_color="#FF000000"/>
+
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/usernameEditText"
@@ -51,19 +61,20 @@
             tools:ignore="SpeakableTextPresentCheck" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/nextBtn"
+            android:id="@+id/updateBtn"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="20dp"
             android:layout_marginHorizontal="20dp"
             android:elevation="10dp"
-            android:text="next"
+            android:text="update profile"
             android:textColor="@color/white"
             android:textStyle="bold"
             android:textSize="20sp"
             android:backgroundTint="@color/purple_500"
             android:background="@drawable/round_btn"
             />
+
 
 
     </LinearLayout>

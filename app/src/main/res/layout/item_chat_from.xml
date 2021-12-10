@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools">
+
+<data>
+    <variable
+        name="message"
+        type="com.juniverse.wheelchat.model.ChatMessage" />
+    <variable
+        name="user"
+        type="com.juniverse.wheelchat.model.User" />
+</data>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginBottom="2dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profileImgCv"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        imageUrl="@{user.profile_img}"
+        android:layout_marginVertical="5dp"
+        android:layout_marginHorizontal="5dp"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/displayNameTv"
+        android:layout_width="wrap_content"
+        android:padding="5dp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="5dp"
+        android:layout_marginHorizontal="5dp"
+        android:layout_gravity="center_vertical"
+        android:textSize="16sp"
+        android:text="@{message.text}"
+        android:textStyle="bold"
+        android:gravity="center_vertical"
+        android:background="@drawable/border_edit_text"
+        />
+
+
+</LinearLayout>
+</layout>

@@ -33,6 +33,7 @@
             android:hint="email"
             android:maxLines="1"
             android:lines="1"
+            android:singleLine="true"
             android:minHeight="48dp"
             android:padding="10dp"
             tools:ignore="SpeakableTextPresentCheck" />

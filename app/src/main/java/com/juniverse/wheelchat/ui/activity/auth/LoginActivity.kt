@@ -1,35 +1,37 @@
 package com.juniverse.wheelchat.ui.activity.auth
 
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import android.view.animation.Animation
-import android.view.animation.RotateAnimation
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.juniverse.wheelchat.databinding.ActivityLoginBinding
-import com.juniverse.wheelchat.ui.activity.MainActivity
-import com.juniverse.wheelchat.viewmodel.FirebaseViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.juniverse.wheelchat.model.User
+import com.juniverse.wheelchat.ui.activity.home.MainActivity
+import com.juniverse.wheelchat.ui.activity.home.ProfileActivity
 
 class LoginActivity : AppCompatActivity() {
 
     private val binding: ActivityLoginBinding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
 
-    private val viewModel: FirebaseViewModel by viewModel()
-
-    private val loadingDialog: ProgressDialog by lazy { ProgressDialog(this@LoginActivity) }
-
+    private var auth: FirebaseAuth? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        initView()
+        supportActionBar?.hide()
 
-        initObserver()
+        auth = FirebaseAuth.getInstance()
+
+        initView()
 
     }
 
@@ -50,51 +52,57 @@ class LoginActivity : AppCompatActivity() {
                     ).show()
                 } else {
                     login(email, password)
+
                 }
             }
 
             signUpTv.setOnClickListener {
-
-                startActivity(
-                    Intent(this@LoginActivity, RegisterActivity::class.java)
-                )
+                startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
             }
 
 
         }
 
-    }
-
-    private fun initObserver(){
-        viewModel.apply {
-            loading.observe(this@LoginActivity, Observer {
-                if(it){
-                    loadingDialog.setTitle("Login")
-                    loadingDialog.setMessage("Loading...")
-                    loadingDialog.show()
-                }else{
-                    loadingDialog.dismiss()
-                }
-            })
-        }
     }
 
     private fun login(email: String, pass: String) {
-        viewModel.signIn(email, pass)
-        viewModel.loggedStatus.observe(this@LoginActivity, Observer {
-            if (it) {
-                loadingDialog.dismiss()
-                startActivity(
-                    Intent(this@LoginActivity, MainActivity::class.java)
-                )
-                finish()
-            }
 
-            viewModel.signInStatus.observe(this@LoginActivity, Observer {
-                Toast.makeText(this@LoginActivity, it, Toast.LENGTH_LONG).show()
-            })
-        })
+        auth?.let { login ->
+            login.signInWithEmailAndPassword(email, pass)
+                .addOnCompleteListener {
 
+                    if (!it.isSuccessful) {
+                        Toast.makeText(this, it.exception?.message, Toast.LENGTH_LONG)
+                            .show()
+                    } else {
+
+                        val userRef = Firebase.database.getReference("User/" + auth?.currentUser?.uid)
+                        userRef.addListenerForSingleValueEvent(object:ValueEventListener{
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                val user = snapshot.getValue(User::class.java)
+                                user?.let { userdata ->
+                                    if (userdata.name.isNullOrEmpty()) {
+                                        ProfileActivity.launch(this@LoginActivity, userdata)
+                                    }else {
+                                        MainActivity.launch(this@LoginActivity, userdata)
+                                    }
+                                    finish()
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+
+                            }
+
+                        })
+
+                    }
+                }.addOnFailureListener { e ->
+
+                    Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
+
+                }
+        }
     }
 
 

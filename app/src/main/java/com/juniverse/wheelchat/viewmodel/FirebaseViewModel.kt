@@ -1,115 +1,138 @@
 package com.juniverse.wheelchat.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import kotlinx.coroutines.CoroutineDispatcher
+import com.google.firebase.database.*
+import com.juniverse.wheelchat.model.ChatMessage
+import com.juniverse.wheelchat.model.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
 
 class FirebaseViewModel() : ViewModel() {
-    private var auth: FirebaseAuth? = null
 
-    private val _loggedStatus = MutableLiveData<Boolean>()
-    val loggedStatus: LiveData<Boolean> = _loggedStatus
+    private lateinit var auth: FirebaseAuth
 
-    private val _currentUser = MutableLiveData<FirebaseUser>()
-    val currentUser :LiveData<FirebaseUser> = _currentUser
+    private lateinit var db: FirebaseDatabase
 
+    private var _userList = MutableLiveData<ArrayList<User>>()
+    val userList: LiveData<ArrayList<User>> = _userList
 
-    var loading: MutableLiveData<Boolean> = MutableLiveData()
+    private var _currentUser: MutableLiveData<User> = MutableLiveData<User>()
+    val currentUser: LiveData<User> = _currentUser
+
+    private var _lastestMessageList: MutableLiveData<HashMap<String, ChatMessage>> =
+        MutableLiveData<HashMap<String, ChatMessage>>()
+    val lastestMessageList: LiveData<HashMap<String, ChatMessage>> = _lastestMessageList
+
 
     init {
         auth = FirebaseAuth.getInstance()
-        loading.postValue(false)
-
+        db = FirebaseDatabase.getInstance()
+        getCurrentUser()
     }
 
-    fun getLoggedStatus() {
+
+    fun fetchUsers() {
+
         viewModelScope.launch {
-            _loggedStatus.value = auth?.currentUser != null
-        }
-    }
+            withContext(Dispatchers.IO) {
+                var userListData = ArrayList<User>()
+                val ref = db.getReference("User")
+                ref.get().addOnCompleteListener {
+                    if (it.isSuccessful) {
 
-    fun getCurrentUser(){
-        viewModelScope.launch {
-            _currentUser.value =auth?.currentUser
-        }
-    }
-
-    private val _registrationStatus = MutableLiveData<String>()
-    val registrationStatus: LiveData<String> = _registrationStatus
-
-    fun signUp(email: String, pass: String) {
-        loading.postValue(true)
-        viewModelScope.launch(Dispatchers.IO) {
-            auth?.let { auth ->
-                auth.createUserWithEmailAndPassword(email, pass)
-                    .addOnCompleteListener {
-                        if (!it.isSuccessful) {
-                            _registrationStatus.postValue(it.exception?.message)
-                        } else {
-                            _registrationStatus.postValue("Sign Up Success")
-                            getLoggedStatus()
+                        it.result?.children?.forEach {
+                            val user = it.getValue(User::class.java)!!
+                            if (auth.currentUser?.uid != user.uid) {
+                                userListData.add(user)
+                            }
                         }
+
+                        _userList.value = userListData
+                        Log.i("TEST@!#", userListData.toString())
+
+
+                    } else {
+                        Log.i("Test", it.exception?.message.toString())
                     }
-                    .addOnFailureListener {
-                        _registrationStatus.postValue(it.message)
-                    }
-                loading.postValue(false)
+                }
             }
         }
+
+
     }
 
-    private val _signInStatus = MutableLiveData<String>()
-    val signInStatus: LiveData<String> = _signInStatus
 
-    fun signIn(email: String, password: String) {
-        loading.postValue(true)
-        viewModelScope.launch(Dispatchers.IO) {
-            auth?.let { login ->
-                login.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener { task ->
+    fun lastestMessageListener() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val lastmap = HashMap<String, ChatMessage>()
 
-                        if (!task.isSuccessful) {
-                            _signInStatus.postValue(task.exception?.message)
-                        } else {
-                            _signInStatus.postValue("Login Successful")
-                            getLoggedStatus()
-                        }
-                    }
-                    .addOnFailureListener {
-                        _signInStatus.postValue(it.message)
+                var ref = db.getReference("last-message/" + auth.currentUser?.uid)
+                ref.addChildEventListener(object : ChildEventListener {
+                    override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                        val chatMessage = snapshot.getValue(ChatMessage::class.java) ?: return
+                        lastmap[snapshot.key!!] = chatMessage
+                        _lastestMessageList.value = lastmap
                     }
 
-                loading.postValue(false)
+                    override fun onChildChanged(
+                        snapshot: DataSnapshot,
+                        previousChildName: String?
+                    ) {
+                        val chatMessage = snapshot.getValue(ChatMessage::class.java) ?: return
+                        lastmap[snapshot.key!!] = chatMessage
+                        _lastestMessageList.value = lastmap
+
+                    }
+
+                    override fun onChildRemoved(snapshot: DataSnapshot) {
+
+                    }
+
+                    override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        return
+                    }
+
+
+                })
             }
         }
+
     }
 
-    private val _signOutStatus = MutableLiveData<Result<String>>()
-    val signOutStatus: LiveData<Result<String>> = _signOutStatus
+    fun getUserByUid(uid: String): User? {
+        _userList.value?.forEach {
+            if (it.uid == uid) {
+                return it
+            }
+        }
+        return null
+    }
 
-    fun signOut() {
-        loading.postValue(true)
-        viewModelScope.launch(Dispatchers.IO) {
-            var errorCode = -1
-            try {
-                auth?.let { authentation ->
-                    authentation.signOut()
-                    _signOutStatus.postValue(Result.success("Signout Successful"))
-                    loading.postValue(false)
-                    getLoggedStatus()
-                }
+    private fun getCurrentUser() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
 
-            } catch (e: Exception) {
-                e.printStackTrace()
-                loading.postValue(false)
-                if (errorCode != -1) {
-                    _signOutStatus.postValue(Result.failure(e))
-                } else {
-                    _signOutStatus.postValue(Result.failure(e))
-                }
+                db.getReference("User/" + auth.currentUser?.uid)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            _currentUser.value = snapshot.getValue(User::class.java) ?: return
+
+
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                        }
+
+                    })
 
 
             }

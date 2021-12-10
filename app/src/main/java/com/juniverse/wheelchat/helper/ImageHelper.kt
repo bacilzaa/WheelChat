@@ -1,9 +1,12 @@
 package com.juniverse.wheelchat.helper
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.provider.MediaStore
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -31,3 +34,4 @@ fun bitmapToFile(context:Context,bitmap: Bitmap): Uri {
     // Return the saved bitmap uri
     return Uri.parse(file.absolutePath)
 }
+
