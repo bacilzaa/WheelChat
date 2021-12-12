@@ -2,10 +2,15 @@ package com.juniverse.wheelchat.ui.activity.home
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -17,6 +22,8 @@ import com.juniverse.wheelchat.ui.fragment.ChatFragment
 import com.juniverse.wheelchat.ui.fragment.HomeFragment
 import com.juniverse.wheelchat.ui.fragment.SettingFragment
 import com.juniverse.wheelchat.viewmodel.FirebaseViewModel
+import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -26,13 +33,13 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel: FirebaseViewModel by viewModel()
 
-    companion object{
+    companion object {
 
         const val CURRENT_USER_KEY = "CURRENT_USER_KEY"
 
-        fun launch(context: Context,user:User){
-            val intent = Intent(context,MainActivity::class.java).apply {
-                putExtra(CURRENT_USER_KEY,user)
+        fun launch(context: Context, user: User) {
+            val intent = Intent(context, MainActivity::class.java).apply {
+                putExtra(CURRENT_USER_KEY, user)
             }
             context.startActivity(intent)
         }
@@ -42,42 +49,65 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-         intent.extras?.getParcelable<User>(CURRENT_USER_KEY).let { currentUser->
+        supportActionBar?.hide()
 
-             if(currentUser == null) return
-             val homeFragment = HomeFragment()
-             val chatFragment = ChatFragment()
-             val settingFragment = SettingFragment()
+        initView()
 
-             setCurrentFragment(homeFragment)
-             supportActionBar?.title = currentUser?.name
+        viewModel.fetchUsers()
+        viewModel.lastestMessageListener()
 
+    }
 
-             bottomNavigationView.setOnItemSelectedListener {
-                 when (it.itemId) {
-                     R.id.homeNav -> {
-                         setCurrentFragment(homeFragment)
-                         supportActionBar?.title = currentUser?.name
-                     }
-                     R.id.chatNav -> {
-                         setCurrentFragment(chatFragment!!)
-                         supportActionBar?.title = "Chat"
-                     }
-                     R.id.settingNav -> {
-                         setCurrentFragment(settingFragment)
-                         supportActionBar?.title = "Setting"
-                     }
+    private fun initView() {
 
-                 }
-                 true
-             }
+        viewModel.apply {
+            currentUser.observe(this@MainActivity, Observer { user->
+
+                val homeFragment = HomeFragment()
+                val chatFragment = ChatFragment()
+                val settingFragment = SettingFragment()
+
+                setCurrentFragment(homeFragment)
+                setHomeFragment(user)
+                Picasso.get().load(user.profile_img).into(binding.toolBar.iconTb)
 
 
-         }
+                bottomNavigationView.setOnItemSelectedListener {
+                    when (it.itemId) {
+                        R.id.homeNav -> {
+                            setCurrentFragment(homeFragment)
+                            setHomeFragment(user)
+                        }
+                        R.id.chatNav -> {
+                            setCurrentFragment(chatFragment)
+                            setChatFragment()
+                        }
+                        R.id.settingNav -> {
+                            setCurrentFragment(settingFragment)
+                            setSettingFragment()
+                        }
 
-         viewModel.fetchUsers()
-         viewModel.lastestMessageListener()
+                    }
+                    true
+                }
 
+            })
+        }
+    }
+
+    private fun setHomeFragment(user: User){
+        binding.toolBar.titleTb.text = user.name
+        binding.toolBar.iconTb.visibility = View.VISIBLE
+    }
+
+    private fun setChatFragment(){
+        binding.toolBar.titleTb.text = "Chat"
+        binding.toolBar.iconTb.visibility = View.GONE
+    }
+
+    private fun setSettingFragment(){
+        binding.toolBar.titleTb.text = "Setting"
+        binding.toolBar.iconTb.visibility = View.GONE
     }
 
 

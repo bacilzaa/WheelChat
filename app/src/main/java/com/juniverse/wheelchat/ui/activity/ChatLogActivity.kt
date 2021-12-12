@@ -1,5 +1,7 @@
 package com.juniverse.wheelchat.ui.activity
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -17,13 +19,11 @@ import com.juniverse.wheelchat.model.User
 import com.juniverse.wheelchat.ui.activity.home.MainActivity.Companion.CURRENT_USER_KEY
 import com.juniverse.wheelchat.ui.adapter.ChatLogAdapter
 import com.juniverse.wheelchat.ui.fragment.ChatFragment
-import kotlinx.android.synthetic.main.activity_chat_log.*
+import com.juniverse.wheelchat.ui.fragment.WheelChatDialogFragment
 
 class ChatLogActivity : AppCompatActivity() {
 
     private val binding : ActivityChatLogBinding by lazy{ ActivityChatLogBinding.inflate(layoutInflater)}
-
-    private val CURRENT_USER_KEY = "CURRENT_USER_KEY"
 
     private val adapter = ChatLogAdapter(mutableListOf())
 
@@ -34,8 +34,8 @@ class ChatLogActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        user = intent.getParcelableExtra<User>(ChatFragment.USER_KEY)
-        currentUser = intent.getParcelableExtra<User>(CURRENT_USER_KEY)
+        user = intent.getParcelableExtra(ChatFragment.USER_KEY)
+        currentUser = intent.getParcelableExtra(CURRENT_USER_KEY)
 
         supportActionBar?.title = user?.name
 
@@ -67,9 +67,15 @@ class ChatLogActivity : AppCompatActivity() {
 
             chatLogRecycleview.scrollToPosition(adapter.itemCount - 1)
 
+            val dialogWheelChat = WheelChatDialogFragment()
+
             sendBtn.setOnClickListener{
-                Log.i("Test","Attemp to send message...")
-                performSendMessage()
+                if(!binding.chatEditText.text.isNullOrEmpty()) {
+                    Log.i("Test", "Attemp to send message...")
+                    performSendMessage()
+                }else{
+                    dialogWheelChat.show(supportFragmentManager,"wheel_chat")
+                }
             }
 
         }

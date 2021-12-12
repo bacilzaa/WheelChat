@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
         <variable
@@ -10,7 +11,7 @@
             type="com.juniverse.wheelchat.model.User" />
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -18,12 +19,14 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profileImgCv"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
             imageUrl="@{user.profile_img}"
-            android:layout_marginVertical="5dp"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
             android:layout_marginHorizontal="5dp"
-            />
+            android:layout_marginVertical="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/usernameTv"
@@ -34,12 +37,16 @@
             android:layout_marginHorizontal="5dp"
             android:layout_gravity="top"
             android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@+id/profileImgCv"
+            app:layout_constraintTop_toTopOf="parent"
             android:text="@{user.name}"
             android:textStyle="bold"
+            android:textColor="@color/black"
             android:gravity="center_vertical"
             />
 
         <androidx.appcompat.widget.AppCompatTextView
+
             android:id="@+id/lastestMessageTv"
             android:layout_width="wrap_content"
             android:padding="5dp"
@@ -47,11 +54,13 @@
             android:layout_marginVertical="5dp"
             android:layout_marginHorizontal="5dp"
             android:layout_gravity="top"
-            android:textSize="16sp"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/profileImgCv"
+            app:layout_constraintTop_toBottomOf="@+id/usernameTv"
             android:text="@{message.text}"
             android:gravity="center_vertical"
             />
 
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
