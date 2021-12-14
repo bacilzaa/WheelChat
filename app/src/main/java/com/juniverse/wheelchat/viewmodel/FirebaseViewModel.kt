@@ -4,8 +4,11 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.juniverse.wheelchat.model.ChatMessage
 import com.juniverse.wheelchat.model.User
+import com.juniverse.wheelchat.model.WheelChat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -28,10 +31,36 @@ class FirebaseViewModel() : ViewModel() {
     val lastestMessageList: LiveData<HashMap<String, ChatMessage>> = _lastestMessageList
 
 
+    private var _wheelChatItem:MutableLiveData<WheelChat> = MutableLiveData<WheelChat>()
+    val wheelChatItem:LiveData<WheelChat> = _wheelChatItem
+
+
     init {
         auth = FirebaseAuth.getInstance()
         db = FirebaseDatabase.getInstance()
         getCurrentUser()
+    }
+
+
+    fun performSendMessage(fromId:String,toId:String,text:String){
+
+
+        val mesFromRef = Firebase.database.getReference("/user-message/$fromId/$toId").push()
+        val mesToRef = Firebase.database.getReference("/user-message/$toId/$fromId").push()
+
+        val chatMessage = ChatMessage(mesFromRef.key!!,text,fromId!!,toId!!,System.currentTimeMillis()/1000)
+
+        mesFromRef.setValue(chatMessage)
+
+        mesToRef.setValue(chatMessage)
+
+        val lastMesFromRef = Firebase.database.getReference("/last-message/$fromId/$toId")
+        val lastMesToRef = Firebase.database.getReference("/last-message/$toId/$fromId")
+
+        lastMesFromRef.setValue(chatMessage)
+        lastMesToRef.setValue(chatMessage)
+
+
     }
 
 
@@ -63,6 +92,21 @@ class FirebaseViewModel() : ViewModel() {
         }
 
 
+    }
+
+    fun fetchWheelChat(){
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val ref = db.getReference("wheelchat/"+ auth.currentUser?.uid)
+                ref.get().addOnCompleteListener {
+                    if(it.isSuccessful){
+                        _wheelChatItem.value = it.result!!.getValue(WheelChat::class.java)
+                    }else{
+                        Log.i("Test", it.exception?.message.toString())
+                    }
+                }
+            }
+            }
     }
 
 
@@ -107,6 +151,7 @@ class FirebaseViewModel() : ViewModel() {
         }
 
     }
+
 
     fun getUserByUid(uid: String): User? {
         _userList.value?.forEach {

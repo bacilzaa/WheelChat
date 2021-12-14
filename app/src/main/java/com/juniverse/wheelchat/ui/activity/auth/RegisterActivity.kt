@@ -1,17 +1,15 @@
 package com.juniverse.wheelchat.ui.activity.auth
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.juniverse.wheelchat.databinding.ActivityRegisterBinding
 import com.juniverse.wheelchat.model.User
-import com.juniverse.wheelchat.ui.activity.home.ProfileActivity
+import com.juniverse.wheelchat.model.WheelChat
+import com.juniverse.wheelchat.ui.activity.edit.ProfileActivity
 //import com.juniverse.wheelchat.viewmodel.FirebaseViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -46,6 +44,9 @@ class RegisterActivity : AppCompatActivity() {
                     register(email, pass)
                 }
             }
+            toLoginTv.setOnClickListener {
+                super.onBackPressed()
+            }
         }
 
     }
@@ -69,6 +70,10 @@ class RegisterActivity : AppCompatActivity() {
                         val db = FirebaseDatabase.getInstance()
                         val userDb = db.getReference("User").child(uid)
 
+                        val wheelChatDb = db.getReference("wheelchat").child(uid)
+                        val wheelchat = WheelChat("Hello","How are you","I'm fine","Thank you")
+
+                        wheelChatDb.setValue(wheelchat)
                         userDb.setValue(userData)
 
                         Toast.makeText(this, "Sign Up Success", Toast.LENGTH_LONG).show()

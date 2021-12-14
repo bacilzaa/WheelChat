@@ -2,19 +2,11 @@ package com.juniverse.wheelchat.ui.activity.home
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.juniverse.wheelchat.R
 import com.juniverse.wheelchat.databinding.ActivityMainBinding
 import com.juniverse.wheelchat.model.User
@@ -23,7 +15,6 @@ import com.juniverse.wheelchat.ui.fragment.HomeFragment
 import com.juniverse.wheelchat.ui.fragment.SettingFragment
 import com.juniverse.wheelchat.viewmodel.FirebaseViewModel
 import com.squareup.picasso.Picasso
-import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

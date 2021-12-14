@@ -13,12 +13,17 @@
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/drawable/ic_baseline_chat_24.xml" value="0.2203125" />
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/drawable/ic_baseline_home_24.xml" value="0.22135416666666666" />
+        <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/drawable/ic_baseline_login_24.xml" value="0.2203125" />
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.3828125" />
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/drawable/ic_launcher_background.xml" value="0.21770833333333334" />
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.221875" />
+        <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/drawable/ic_logo_wheelchat.xml" value="0.21822916666666667" />
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/drawable/ic_splash_screen.xml" value="0.22135416666666666" />
+        <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/drawable/ic_wheel_chat_ball.xml" value="0.21822916666666667" />
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/drawable/ic_wheel_chat_circle.xml" value="0.22135416666666666" />
+        <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/drawable/ic_wheel_chat_selector.xml" value="0.3828125" />
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/drawable/ic_wheelchat_icon.xml" value="0.2203125" />
+        <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/drawable/placeholder_img.xml" value="0.3828125" />
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/drawable/rect_border.xml" value="0.21822916666666667" />
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/drawable/round_btn.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/drawable/shadow.xml" value="0.221875" />
@@ -34,6 +39,7 @@
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/layout/activity_profile.xml" value="0.18711217183770884" />
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/layout/activity_register.xml" value="0.245018115942029" />
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/layout/activity_splash_screen.xml" value="0.2015625" />
+        <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/layout/activity_wheel_chat.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/layout/blank_fragment.xml" value="0.2015625" />
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/layout/dialog_fragment_wheel_chat.xml" value="0.33" />
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/layout/fragment_chat.xml" value="0.36666666666666664" />
@@ -43,6 +49,7 @@
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/layout/item_chat_from.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/layout/item_chat_to.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/layout/item_lastest_message_list.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/layout/item_setting_list.xml" value="0.35054347826086957" />
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/layout/item_user_list.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/layout/search_box.xml" value="0.67" />
         <entry key="..\:/Users/varav/Desktop/wheelchat/app/src/main/res/layout/toolbar.xml" value="0.25" />

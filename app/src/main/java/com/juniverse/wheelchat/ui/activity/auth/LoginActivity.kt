@@ -3,7 +3,6 @@ package com.juniverse.wheelchat.ui.activity.auth
 
 import android.content.Intent
 import android.os.Bundle
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -15,7 +14,7 @@ import com.google.firebase.ktx.Firebase
 import com.juniverse.wheelchat.databinding.ActivityLoginBinding
 import com.juniverse.wheelchat.model.User
 import com.juniverse.wheelchat.ui.activity.home.MainActivity
-import com.juniverse.wheelchat.ui.activity.home.ProfileActivity
+import com.juniverse.wheelchat.ui.activity.edit.ProfileActivity
 
 class LoginActivity : AppCompatActivity() {
 

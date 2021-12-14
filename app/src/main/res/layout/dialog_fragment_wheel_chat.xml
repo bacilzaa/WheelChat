@@ -12,86 +12,175 @@
         android:layout_height="match_parent"
         >
 
-        <FrameLayout
-            android:id="@+id/selector_area_bottom"
-            android:layout_width="153dp"
-            android:layout_height="120dp"
-            android:layout_marginTop="12dp"
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/wheel_chat_area_top"
+            android:layout_width="120dp"
+            android:layout_height="182dp"
+            android:layout_marginBottom="15dp"
+            app:layout_constraintBottom_toTopOf="@+id/wheel_ball"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.501"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/wheel_chat_area_right"
+            android:layout_width="172dp"
+            android:layout_height="75dp"
+            android:layout_marginStart="15dp"
+            app:layout_constraintBottom_toTopOf="@+id/wheel_chat_area_bottom"
+            app:layout_constraintStart_toEndOf="@+id/wheel_ball"
+            app:layout_constraintTop_toBottomOf="@+id/wheel_chat_area_top" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/wheel_chat_area_bottom"
+            android:layout_width="120dp"
+            android:layout_height="180dp"
+            android:layout_marginTop="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/wheel_ball">
+            app:layout_constraintTop_toBottomOf="@+id/wheel_ball" />
 
-        </FrameLayout>
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/wheel_chat_area_left"
+            android:layout_width="170dp"
+            android:layout_height="80dp"
+            android:layout_marginEnd="15dp"
+            app:layout_constraintBottom_toTopOf="@+id/wheel_chat_area_bottom"
+            app:layout_constraintEnd_toStartOf="@+id/wheel_ball"
+            app:layout_constraintTop_toBottomOf="@+id/wheel_chat_area_top" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/wheel_chat_selector_top"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="30dp"
+            android:alpha="0"
+            android:rotation="270"
+            android:src="@drawable/ic_wheel_chat_selector"
+            app:layout_constraintBottom_toBottomOf="@+id/wheel_chat_area_top"
+            app:layout_constraintEnd_toEndOf="@+id/wheel_chat_area_top"
+            app:layout_constraintStart_toStartOf="@+id/wheel_chat_area_top" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/wheel_chat_selector_right"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="30dp"
+            android:layout_gravity="center_vertical"
+            android:alpha="0"
+            android:src="@drawable/ic_wheel_chat_selector"
+            app:layout_constraintBottom_toBottomOf="@+id/wheel_chat_area_right"
+            app:layout_constraintStart_toStartOf="@+id/wheel_chat_area_right"
+            app:layout_constraintTop_toTopOf="@+id/wheel_chat_area_right" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/wheel_chat_selector_bottom"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center_vertical"
+            android:alpha="0"
+            android:rotation="90"
+            android:src="@drawable/ic_wheel_chat_selector"
+            app:layout_constraintEnd_toEndOf="@+id/wheel_chat_area_bottom"
+            app:layout_constraintStart_toStartOf="@+id/wheel_chat_area_bottom"
+            app:layout_constraintTop_toTopOf="@+id/wheel_chat_area_bottom" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/wheel_chat_selector_left"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="30dp"
+            android:alpha="0"
+            android:rotation="180"
+            android:src="@drawable/ic_wheel_chat_selector"
+            app:layout_constraintBottom_toBottomOf="@+id/wheel_chat_area_left"
+            app:layout_constraintEnd_toEndOf="@+id/wheel_chat_area_left"
+            app:layout_constraintTop_toTopOf="@+id/wheel_chat_area_left" />
+
+        <TextView
+            android:id="@+id/wheel_chat_tv_top"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:alpha="0.5"
+            android:gravity="center"
+            android:text="TextTop"
+            android:background="@drawable/border_edit_text"
+            android:textColor="@android:color/darker_gray"
+            app:layout_constraintBottom_toTopOf="@+id/wheel_chat_selector_top"
+            app:layout_constraintEnd_toEndOf="@+id/wheel_chat_selector_top"
+            app:layout_constraintHorizontal_bias="0.046"
+            app:layout_constraintStart_toStartOf="@+id/wheel_chat_area_top"
+            app:layout_constraintTop_toTopOf="@+id/wheel_chat_area_top"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <TextView
+            android:id="@+id/wheel_chat_tv_right"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:alpha="0.5"
+            android:gravity="center"
+            android:text="TextRight"
+            android:background="@drawable/border_edit_text"
+            android:textColor="@android:color/darker_gray"
+            app:layout_constraintStart_toEndOf="@+id/wheel_chat_selector_right"
+            app:layout_constraintTop_toTopOf="@+id/wheel_chat_area_right"
+            app:layout_constraintBottom_toBottomOf="@+id/wheel_chat_area_right" />
+
+        <TextView
+            android:id="@+id/wheel_chat_tv_left"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:alpha="0.5"
+            android:gravity="center"
+            android:text="TextLeft"
+            android:background="@drawable/border_edit_text"
+            android:textColor="@android:color/darker_gray"
+            app:layout_constraintBottom_toBottomOf="@+id/wheel_chat_area_left"
+            app:layout_constraintEnd_toStartOf="@+id/wheel_chat_selector_left"
+            app:layout_constraintTop_toTopOf="@+id/wheel_chat_area_left"
+            />
+
+        <TextView
+            android:id="@+id/wheel_chat_tv_bottom"
+            android:layout_width="107dp"
+            android:layout_height="40dp"
+            android:alpha="0.5"
+            android:gravity="center"
+            android:text="TextBottom"
+            android:background="@drawable/border_edit_text"
+            android:textColor="@android:color/darker_gray"
+            app:layout_constraintEnd_toEndOf="@+id/wheel_chat_area_bottom"
+            app:layout_constraintStart_toStartOf="@+id/wheel_chat_area_bottom"
+            app:layout_constraintTop_toBottomOf="@+id/wheel_chat_selector_bottom" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/wheel_circle"
-            android:layout_width="154dp"
-            android:layout_height="121dp"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
             android:src="@drawable/ic_wheel_chat_circle"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.708" />
+            android:layout_marginTop="272dp"
+            />
 
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/wheel_ball"
-            android:layout_width="49dp"
-            android:layout_height="43dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:src="@drawable/ic_wheel_chat_ball"
             app:layout_constraintBottom_toBottomOf="@+id/wheel_circle"
             app:layout_constraintEnd_toEndOf="@+id/wheel_circle"
             app:layout_constraintStart_toStartOf="@+id/wheel_circle"
             app:layout_constraintTop_toTopOf="@+id/wheel_circle" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/wheel_chat_selector"
-            android:layout_width="36dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="144dp"
-            android:layout_marginTop="36dp"
-            android:src="@drawable/ic_wheel_chat_selector"
-            app:layout_constraintStart_toStartOf="@+id/wheel_circle"
-            app:layout_constraintTop_toTopOf="@+id/wheel_circle" />
-
-        <FrameLayout
-            android:id="@+id/selector_area_right"
-            android:layout_width="166dp"
-            android:layout_height="76dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/wheel_ball"
-            app:layout_constraintTop_toTopOf="@+id/wheel_circle">
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/selector_area_left"
-            android:layout_width="168dp"
-            android:layout_height="74dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/wheel_ball"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/wheel_circle">
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/selector_area_top"
-            android:layout_width="153dp"
-            android:layout_height="120dp"
-            android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toTopOf="@+id/wheel_ball"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-        </FrameLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

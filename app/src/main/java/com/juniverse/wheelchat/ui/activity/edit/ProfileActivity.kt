@@ -1,4 +1,4 @@
-package com.juniverse.wheelchat.ui.activity.home
+package com.juniverse.wheelchat.ui.activity.edit
 
 import android.app.AlertDialog
 import android.content.Context
@@ -19,6 +19,7 @@ import com.google.firebase.storage.ktx.storage
 import com.juniverse.wheelchat.databinding.ActivityProfileBinding
 import com.juniverse.wheelchat.helper.bitmapToFile
 import com.juniverse.wheelchat.model.User
+import com.juniverse.wheelchat.ui.activity.home.MainActivity
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_profile.*
 import java.io.*
@@ -76,8 +77,8 @@ class ProfileActivity : AppCompatActivity() {
 
             Log.i("Test", "ProfileActivity :" + currentUser.toString())
 
-            if (!currentUser?.name.isNullOrEmpty()) {
-                usernameEditText.setText(currentUser?.name)
+            if (!currentUser.name.isEmpty()) {
+                usernameEditText.setText(currentUser.name)
                 profileCloseBtn.visibility = View.VISIBLE
 
                 if (imageUri == null) {

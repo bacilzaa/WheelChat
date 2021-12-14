@@ -1,11 +1,11 @@
 package com.juniverse.wheelchat.ui.activity
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import androidx.lifecycle.Observer
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -20,10 +20,13 @@ import com.juniverse.wheelchat.ui.activity.home.MainActivity.Companion.CURRENT_U
 import com.juniverse.wheelchat.ui.adapter.ChatLogAdapter
 import com.juniverse.wheelchat.ui.fragment.ChatFragment
 import com.juniverse.wheelchat.ui.fragment.WheelChatDialogFragment
+import com.juniverse.wheelchat.viewmodel.FirebaseViewModel
 
 class ChatLogActivity : AppCompatActivity() {
 
     private val binding : ActivityChatLogBinding by lazy{ ActivityChatLogBinding.inflate(layoutInflater)}
+
+    private val viewModel:FirebaseViewModel by viewModel()
 
     private val adapter = ChatLogAdapter(mutableListOf())
 
@@ -46,12 +49,15 @@ class ChatLogActivity : AppCompatActivity() {
         listenForMessages()
 
         initView()
+
+        viewModel.fetchWheelChat()
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             android.R.id.home->{
-                finish()
+                super.onBackPressed()
                 return true
             }
         }
@@ -67,14 +73,21 @@ class ChatLogActivity : AppCompatActivity() {
 
             chatLogRecycleview.scrollToPosition(adapter.itemCount - 1)
 
-            val dialogWheelChat = WheelChatDialogFragment()
+            val dialogWheelChat = WheelChatDialogFragment.newInstance(currentUser!!,user!!)
 
             sendBtn.setOnClickListener{
                 if(!binding.chatEditText.text.isNullOrEmpty()) {
                     Log.i("Test", "Attemp to send message...")
-                    performSendMessage()
+
+                    viewModel.performSendMessage(currentUser!!.uid,user!!.uid,binding.chatEditText.text.toString())
+
                 }else{
                     dialogWheelChat.show(supportFragmentManager,"wheel_chat")
+                }
+
+                with(binding){
+                    chatEditText.text?.clear()
+                    chatLogRecycleview.scrollToPosition(adapter.itemCount - 1)
                 }
             }
 
@@ -93,10 +106,7 @@ class ChatLogActivity : AppCompatActivity() {
         val chatMessage = ChatMessage(mesFromRef.key!!,text,fromId!!,toId!!,System.currentTimeMillis()/1000)
 
         mesFromRef.setValue(chatMessage).addOnSuccessListener {
-            with(binding){
-                chatEditText.text?.clear()
-                chatLogRecycleview.scrollToPosition(adapter.itemCount - 1)
-            }
+
         }
 
         mesToRef.setValue(chatMessage)
