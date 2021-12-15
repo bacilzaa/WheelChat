@@ -30,13 +30,11 @@ class SplashScreenActivity : AppCompatActivity() {
             viewModel.currentUser.observe(this, Observer { user ->
                 Log.i("ViewModel", user.toString())
                 if (user.name.isNullOrEmpty()) {
-                    ProfileActivity.launch(this@SplashScreenActivity, user)
+                    startActivity(Intent(this@SplashScreenActivity, ProfileActivity::class.java))
                     finish()
                 } else {
                     MainActivity.launch(this@SplashScreenActivity, user)
                     finish()
-
-
                 }
             })
         } else {

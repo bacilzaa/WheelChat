@@ -33,20 +33,16 @@ class SettingFragment : DataBindingFragment<FragmentSettingBinding>() {
             adapter.setOnClickListener {
                 when (it) {
                     0 -> {
-                        ProfileActivity.launch(requireActivity(), viewModel.currentUser.value!!)
+                        startActivity(Intent(activity,ProfileActivity::class.java))
                     }
                     1 -> {
                         startActivity(Intent(activity,WheelChatActivity::class.java))
                     }
                     2 -> {
-                        var auth = FirebaseAuth.getInstance()
-                        auth.signOut()
-
                         var intent = Intent(activity, LoginActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                         startActivity(intent)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                        activity?.finish()
+
                     }
                 }
             }

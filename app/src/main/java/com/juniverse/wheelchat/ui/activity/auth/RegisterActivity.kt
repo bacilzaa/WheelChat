@@ -1,5 +1,6 @@
 package com.juniverse.wheelchat.ui.activity.auth
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -9,7 +10,7 @@ import com.juniverse.wheelchat.databinding.ActivityRegisterBinding
 import com.juniverse.wheelchat.model.User
 import com.juniverse.wheelchat.model.WheelChat
 import com.juniverse.wheelchat.ui.activity.edit.ProfileActivity
-//import com.juniverse.wheelchat.viewmodel.FirebaseViewModel
+
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -78,7 +79,7 @@ class RegisterActivity : AppCompatActivity() {
 
                         Toast.makeText(this, "Sign Up Success", Toast.LENGTH_LONG).show()
 
-                        ProfileActivity.launch(this,userData)
+                        startActivity(Intent(this,ProfileActivity::class.java))
                         finish()
 
                     }

@@ -75,7 +75,7 @@ class FirebaseViewModel() : ViewModel() {
 
                         it.result?.children?.forEach {
                             val user = it.getValue(User::class.java)!!
-                            if (auth.currentUser?.uid != user.uid) {
+                            if (auth.currentUser?.uid != user.uid && user.name.isNotEmpty()) {
                                 userListData.add(user)
                             }
                         }

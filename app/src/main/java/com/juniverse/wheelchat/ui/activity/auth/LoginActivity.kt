@@ -29,7 +29,9 @@ class LoginActivity : AppCompatActivity() {
         supportActionBar?.hide()
 
         auth = FirebaseAuth.getInstance()
-
+        if(auth?.currentUser != null){
+            auth?.signOut()
+        }
         initView()
 
     }
@@ -81,7 +83,7 @@ class LoginActivity : AppCompatActivity() {
                                 val user = snapshot.getValue(User::class.java)
                                 user?.let { userdata ->
                                     if (userdata.name.isNullOrEmpty()) {
-                                        ProfileActivity.launch(this@LoginActivity, userdata)
+                                        startActivity(Intent(this@LoginActivity,ProfileActivity::class.java))
                                     }else {
                                         MainActivity.launch(this@LoginActivity, userdata)
                                     }

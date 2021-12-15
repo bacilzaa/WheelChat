@@ -1,7 +1,6 @@
 package com.juniverse.wheelchat.ui.activity.edit
 
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -11,19 +10,19 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.juniverse.wheelchat.databinding.ActivityProfileBinding
 import com.juniverse.wheelchat.helper.bitmapToFile
-import com.juniverse.wheelchat.model.User
 import com.juniverse.wheelchat.ui.activity.home.MainActivity
+import com.juniverse.wheelchat.viewmodel.FirebaseViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_profile.*
 import java.io.*
 import java.util.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.lifecycle.Observer
+import com.google.firebase.database.ktx.database
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -35,27 +34,9 @@ class ProfileActivity : AppCompatActivity() {
         )
     }
 
-    companion object {
-        const val CURRENT_USER_KEY = "CURRENT_USER_KEY"
-
-        fun launch(context: Context, user: User) {
-            val intent = Intent(context, ProfileActivity::class.java).apply {
-                putExtra(CURRENT_USER_KEY, user)
-            }
-            context.startActivity(intent)
-        }
-    }
+    private val viewModel: FirebaseViewModel by viewModel()
 
     private var imageUri: Uri? = null
-
-    private var auth: FirebaseAuth? = null
-
-    private var db: DatabaseReference? = null
-
-    init {
-        auth = FirebaseAuth.getInstance()
-        db = Firebase.database.reference.child("User").child(auth?.currentUser?.uid.toString())
-    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,27 +46,30 @@ class ProfileActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        intent.extras?.getParcelable<User>(CURRENT_USER_KEY)?.let {
-            initView(it)
-        }
+
+        initView()
+
     }
 
 
-    private fun initView(currentUser: User) {
+    private fun initView() {
 
         with(binding) {
 
-            Log.i("Test", "ProfileActivity :" + currentUser.toString())
+            viewModel.currentUser.observe(this@ProfileActivity, Observer { user ->
+                if (user != null) {
+                    if (!user.name.isEmpty()) {
+                        usernameEditText.setText(user.name)
+                        profileCloseBtn.visibility = View.VISIBLE
 
-            if (!currentUser.name.isEmpty()) {
-                usernameEditText.setText(currentUser.name)
-                profileCloseBtn.visibility = View.VISIBLE
-
-                if (imageUri == null) {
-                    Picasso.get().load(currentUser?.profile_img)
-                        .into(profileImageBtn)
+                        if (imageUri == null) {
+                            Picasso.get().load(user.profile_img)
+                                .into(profileImageBtn)
+                        }
+                    }
                 }
-            }
+            })
+
 
             profileCloseBtn.setOnClickListener {
                 finish()
@@ -143,7 +127,7 @@ class ProfileActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data?.data != null) {
-            imageUri = data?.data
+            imageUri = data.data
         } else {
             imageUri = bitmapToFile(this@ProfileActivity, data?.extras?.get("data") as Bitmap)
         }
@@ -154,19 +138,19 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun updateProfile(username: String) {
 
-        var uid = auth?.currentUser?.uid.toString()
+        var uid = viewModel.currentUser.value!!.uid
 
-
-        val refStorage = Firebase.storage.reference.child("User/Profile/" + uid)
+        val refStorage = Firebase.storage.reference.child("profile/"+uid)
         imageUri?.let {
             refStorage.putFile(it)
                 .addOnSuccessListener { task ->
 
                     refStorage.downloadUrl.addOnSuccessListener {
                         var profile_img = it.toString()
+                        val db = Firebase.database.getReference("User/" + uid)
 
-                        db?.child("name")?.setValue(username)
-                        db?.child("profile_img")?.setValue(profile_img)
+                        db.child("name").setValue(username)
+                        db.child("profile_img").setValue(profile_img)
 
                         startActivity(Intent(this@ProfileActivity, MainActivity::class.java))
                         finish()
